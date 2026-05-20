@@ -23,7 +23,15 @@ services:
       - default
     depends_on:
       - mongodb
-
+      
+  catalogue:
+    build: ./catalogue
+    image: catalogue:v1
+    container_name: catalogue
+    networks:
+      - default
+    depends_on:
+      - mongodb
   mysql:
     build: ./mysql
     image: mysql:v1
