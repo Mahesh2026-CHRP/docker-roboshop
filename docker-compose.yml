@@ -8,12 +8,61 @@ services:
     networks:
       - default
 
-  catalogue:
-    build: ./catalogue
-    image: catalogue:v1
-    container_name: catalogue
+  rabbitmq:
+    build: ./rabbitmq
+    image: rabbitmq:v1
+    container_name: rabbitmq
     networks:
       - default
+
+  user:
+    build: ./user
+    image: user:v1
+    container_name: user
+    networks:
+      - default
+    depends_on:
+      - mongodb
+
+  mysql:
+    build: ./mysql
+    image: mysql:v1
+    container_name: mysql
+    networks:
+      - default
+
+  shipping:
+    build: ./shipping
+    image: shipping:v1
+    container_name: shipping
+    networks:
+      - default
+    depends_on:
+      - mysql
+
+  payments:
+    build: ./payments
+    image: payments:v1
+    container_name: payments
+    networks:
+      - default
+    depends_on:
+      - rabbitmq
+
+  redis:
+    image: redis:7
+    container_name: redis
+    networks:
+      - default
+
+  cart:
+    build: ./cart
+    image: cart:v1
+    container_name: cart
+    networks:
+      - default
+    depends_on:
+      - redis
 
   frontend:
     build: ./frontend
@@ -23,6 +72,8 @@ services:
       - "80:80"
     networks:
       - default
+    depends_on:
+      - rabbitmq
 
 networks:
   default:
